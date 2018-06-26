@@ -21,10 +21,7 @@ export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH
 
 ### 安装
 
-下载
-
-
-解压
+下载解压
 
 ```sh
 cd /opt/
@@ -76,6 +73,9 @@ hadoop 1.2.1 的配置文件在conf中
 配置/etc/profile
 
 ```sh
+export JAVA_HOME=/usr/lib/jvm/java-9-openjdk-amd64/
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH
 export HADOOP_HOME=/opt/hadoop-1.2.1
 export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$HADOOP_HOME/bin:$PATH
 ```
