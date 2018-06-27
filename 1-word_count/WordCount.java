@@ -21,6 +21,8 @@ public class WordCount {
 
 		public void map(LongWritable key, Text value, Context context)
 				throws IOException, InterruptedException {
+			System.out.println(key.toString());
+			System.out.println(value.toString());
 			String line = value.toString();
 			StringTokenizer token = new StringTokenizer(line);
 			while (token.hasMoreTokens()) {
