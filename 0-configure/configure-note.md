@@ -87,3 +87,18 @@ export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$HADOOP_HOME/bin:$PATH
 https://www.jianshu.com/p/ec63eef00703
 ssh的问题
 https://blog.csdn.net/coffeeandice/article/details/78879151 
+
+
+## 另外
+
+查看日志，可以自己打印信息
+
+编辑mapred-site.xml， 加入这个属性。
+
+```xml
+<property>  
+<!-- hadoop的日志输出指定目录-->  
+<name>mapred.local.dir</name>  
+<value>/home/walker/hadoop/mylogs</value>  
+</property> 
+```
