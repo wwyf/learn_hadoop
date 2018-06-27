@@ -21,6 +21,8 @@ public class WordCount {
 
 		public void map(LongWritable key, Text value, Context context)
 				throws IOException, InterruptedException {
+			System.out.println(key.toString());
+			System.out.println(value.toString());
 			String line = value.toString();
 			StringTokenizer token = new StringTokenizer(line);
 			while (token.hasMoreTokens()) {
@@ -43,16 +45,23 @@ public class WordCount {
 	}
 
 	public static void main(String[] args) throws Exception {
+		/* 配置 */
 		Configuration conf = new Configuration();
+		/* 增加一个job */
 		Job job = new Job(conf);
+
+		job.setJobName("wordcount");
 		job.setJarByClass(WordCount.class);
+
 		job.setMapperClass(WordCountMap.class);
 		job.setReducerClass(WordCountReduce.class);
-		job.setJobName("wordcount");
+
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
+		
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
+		
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		job.waitForCompletion(true);
