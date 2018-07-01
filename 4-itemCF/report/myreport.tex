@@ -28,35 +28,52 @@
 % 正文
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{test}
-test
+\chapter{项目概述}
 
-\section{testsection}
-test
+TODO:写一下这个项目我大概做了什么啥的
 
-\chapter{testchapter}
-test 
+\chapter{集群部署}
+
+TODO:部署过程中一些需要注意的问题
+
+\chapter{算法原理}
 
 
+TODO:算法原理应该都知道，就简单说说就好
 
+
+\chapter{算法实现}
+
+TODO:该算法在hadoop上的实现，mapreduce式的实现还是蛮难想的
+
+\chapter{测试结果}
+
+TODO:写一下自己训练，测试的结果
+比如训练时间，训练过程中出现的问题及解决方法
+
+\chapter{关于性能的思考}
+
+TODO:在训练过程发现有很多在性能上可以提高的点
+
+1. hadoop 1.2.1 中slot的概念，目前我们训练过程中slot的分配，以及理想应该具有的分配。
+关于资源管理的思考http://dongxicheng.org/mapreduce-nextgen/hadoop-1-and-2-resource-manage/
+
+2. 关于hdfs中block大小的设置。我们一开始没有设，默认为64MB，（怎样怎样bilibala），后来为了让计算更加的“分布式”，就把block设置了1mb（虽然这与hdfs设置默认block大小的初衷违背），怎样怎样bilibala
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 参考文献
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \cleardoublepage\phantomsection
-% \addcontentsline{toc}{chapter}{参考文献}
+\cleardoublepage\phantomsection
+\addcontentsline{toc}{chapter}{参考资料}
 
-% \bibliography{opsystem}
-% \bibliographystyle{unsrt}
+\bibliography{opsystem}
+\bibliographystyle{unsrt}
 
-% \begin{thebibliography}{00}
-%   \bibitem{r1} 作者. 文章题目 [J].  期刊名, 出版年份，卷号(期数): 起止页码.
-%   \bibitem{r2} 作者. 书名 [M]. 版次. 出版地：出版单位，出版年份：起止页码.
-%   \bibitem{r3} 邓建松等, 《\LaTeXe~科技排版指南》, 科学出版社.
-%   \bibitem{r4} 吴凌云, 《CTeX~FAQ (常见问题集)》, \textit{Version~0.4}, June 21, 2004.
-%   \bibitem{r5} Herbert Vo\ss, Mathmode, \url{http://www.tex.ac.uk/ctan/info/math/voss/mathmode/Mathmode.pdf}.
-% \end{thebibliography}
+\begin{thebibliography}{00}
+  \bibitem{class1} 慕课网教程：Hadoop大数据平台架构与实践--基础篇，\url{https://www.imooc.com/learn/391}
+  \bibitem{class2} 慕课网教程：Hadoop大数据平台架构与实践--进阶篇，\url{https://www.imooc.com/learn/890}
+\end{thebibliography}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 附录
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
