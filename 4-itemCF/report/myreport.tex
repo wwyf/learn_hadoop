@@ -1,0 +1,68 @@
+% \documentclass{WHUBachelor}% 选项 forprint: 交付打印时添加, 避免彩色链接字迹打印偏淡. 即使用下一行:
+\documentclass[forprint]{myreport}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 封面
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{ 基于物品的协同过滤推荐算法 \\ 集群部署及算法实现}
+\Cschoolname{数据科学与计算机学院}          % 学院名
+\Cmajor{计算机科学与技术}                  % 专业中文名
+\StudentNumber{16337237} % 填写自己的学号
+\author{王永锋}                            % 作者名字
+\Csupervisor{陈鹏飞}        %指导教师中文名、职称
+\date{二〇一八年七月一日}                % 日期, 要注意和英文日期一致!!
+\pdfbookmark[0]{封面}{title}         % 封面页加到 pdf 书签
+\maketitle
+\frontmatter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 目录
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 把目录加入到书签
+\pagenumbering{Roman}              % 正文之前的页码用大写罗马字母编号.
+\pdfbookmark[0]{目录}{toc}
+\tableofcontents
+%% 以下是正文
+\mainmatter 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 正文
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{test}
+test
+
+\section{testsection}
+test
+
+\chapter{testchapter}
+test 
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 参考文献
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \cleardoublepage\phantomsection
+% \addcontentsline{toc}{chapter}{参考文献}
+
+% \bibliography{opsystem}
+% \bibliographystyle{unsrt}
+
+% \begin{thebibliography}{00}
+%   \bibitem{r1} 作者. 文章题目 [J].  期刊名, 出版年份，卷号(期数): 起止页码.
+%   \bibitem{r2} 作者. 书名 [M]. 版次. 出版地：出版单位，出版年份：起止页码.
+%   \bibitem{r3} 邓建松等, 《\LaTeXe~科技排版指南》, 科学出版社.
+%   \bibitem{r4} 吴凌云, 《CTeX~FAQ (常见问题集)》, \textit{Version~0.4}, June 21, 2004.
+%   \bibitem{r5} Herbert Vo\ss, Mathmode, \url{http://www.tex.ac.uk/ctan/info/math/voss/mathmode/Mathmode.pdf}.
+% \end{thebibliography}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 附录
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+
+\chapter{文件的组织}
+
+\cleardoublepage
+\end{document}
