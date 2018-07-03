@@ -172,14 +172,46 @@ TODO:如果有当时的网速截图就好了
 
 我们实现的算法是基于物品的协同过滤推荐算法，这个算法的核心是矩阵相乘。因此，在明确了算法原理后，我们使用了mapreduce将输入的用户评分数据进行预处理，矩阵相乘。为了实现最终得到推荐的分数，我们使用了5步mapreduce来实现。
 
-\subsection{算法原理}
+这一个系统的输入与输出如下：
 
-TODO:该算法在hadoop上的实现，mapreduce式的实现还是蛮难想的
+输入：每一行形如 UserID,FilmID,Score
+其中UserID为用户ID，FilmID为电影ID，Score为评分。
 
-\subsection{实现细节}
+输出：每一行形如UserID d1\_s1,d2\_s2,d3\_s3。
+其中UserID为用户ID，与输入数据对应，随着UserID之后的列表，d(n)为电影ID，s(n)为预测的该用户对该电影的评分。注意到后面的电影ID应该都是该用户没有看过的电影。
+
+\section{实现原理}
+
+我们使用了五步Mapreduce来实现这一个推荐系统。
+
+\subsection{每一步的大致作用}
+
+TODO:这里需要说每一步的mapreduce的大致作用，让读者对整个过程有个大致的了解。
+
+\section{实现细节}
 
 
-TODO:帖一些代码?
+
+\subsection{第一步}
+
+TODO:数据预处理
+
+\subsection{第二步}
+
+TODO:计算相似度矩阵
+
+\subsection{第三步}
+
+TODO:矩阵转置
+
+\subsection{第四步}
+
+TODO:矩阵相乘
+
+\subsection{第五步}
+
+TODO: 去除已看过电影数据
+
 
 \chapter{测试结果}
 
