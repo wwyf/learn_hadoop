@@ -1,6 +1,8 @@
 % \documentclass{WHUBachelor}% 选项 forprint: 交付打印时添加, 避免彩色链接字迹打印偏淡. 即使用下一行:
 \documentclass[forprint]{myreport}
 \usepackage{tcolorbox}
+\usepackage{multicol}
+\usepackage{changepage}
 
 %\usepackage{listings}
 \lstdefinestyle{lfonts}{
@@ -80,7 +82,7 @@
 
 \subsection{网络环境}
 
-我和同学的三台笔记本，通过极路由1s相连，具体细节可见表\autoref{tab:}
+我和同学的三台笔记本，通过极路由1s相连，具体细节可见表\autoref{tab:deploy-1}
 
 %\usepackage[svgnames,table]{xcolor}
 %\usepackage{changepage}
@@ -123,8 +125,6 @@
 
 
 \end{tcolorbox}
-
-TODO:如果有当时的网速截图就好了
 
 
 \subsection{主机的配置}
@@ -180,13 +180,58 @@ TODO:如果有当时的网速截图就好了
 输出：每一行形如UserID d1\_s1,d2\_s2,d3\_s3。
 其中UserID为用户ID，与输入数据对应，随着UserID之后的列表，d(n)为电影ID，s(n)为预测的该用户对该电影的评分。注意到后面的电影ID应该都是该用户没有看过的电影。
 
+\begin{multicols}{2} % align columns
+    %\usepackage{changepage}
+    %\usepackage{rotating}
+    %\usepackage{float}
+    %\usepackage[section]{placeins}
+    %\begin{sidewaystable}[!Htp]
+    \begin{figure}[htp]
+      %\begin{adjustwidth}{-1.5cm}{-1cm}
+      \centering
+      \includegraphics[width=13cm]{figure/2018-07-04-10-30-07.png}
+      \caption{输入文件示例}
+      \label{fig:example-input}
+      %\end{adjustwidth}
+    \end{figure}
+    
+  \columnbreak
+    %\usepackage{changepage}
+    %\usepackage{rotating}
+    %\usepackage{float}
+    %\usepackage[section]{placeins}
+    %\begin{sidewaystable}[!Htp]
+    \begin{figure}[htp]
+      %\begin{adjustwidth}{-1.5cm}{-1cm}
+      \centering
+      \includegraphics[width=13cm]{figure/2018-07-04-10-31-18.png}
+      \caption{输出文件示例}
+      \label{fig:example-output}
+      %\end{adjustwidth}
+    \end{figure}
+  
+\end{multicols}
+
+
+
 \section{实现原理}
 
 我们使用了五步Mapreduce来实现这一个推荐系统。
 
 \subsection{每一步的大致作用}
 
-TODO:这里需要说每一步的mapreduce的大致作用，让读者对整个过程有个大致的了解。
+这里简要地说明每一步的mapreduce的作用。
+
+
+\begin{description}
+  \item[第一步] 从输入文件，得到以FilmID为key，多个UserID\_Score为value的键值对，构建用户-物品倒排表。
+  \item[第二步] 使用用户-物品倒排表，计算得到相似度矩阵
+  \item[第三步] 将用户-物品倒排表矩阵进行转置，为之后的矩阵相乘准备
+  \item[第四步] 矩阵相乘
+  \item[第五步] 从最终评分结果中去除用户已看过的ID，得到最终推荐得分及列表
+\end{description}  
+
+下面对部分步骤进行更深入的讨论。
 
 \section{实现细节}
 
@@ -194,23 +239,98 @@ TODO:这里需要说每一步的mapreduce的大致作用，让读者对整个过
 
 \subsection{第一步}
 
-TODO:数据预处理
+关于第一步的职责可见\autoref{tab:s1-mapreduce}，其中，map函数的关键代码可见下面部分。
+在该步骤完成后，便得到了用户-物品倒排表。
+
+%\usepackage[svgnames,table]{xcolor}
+
+%\usepackage{rotating}
+%\begin{sidewaystable}[htp]
+  \begin{table}[htp]
+    \caption{第一步mapreduce的作用}
+    \centering
+    \rowcolors{1}{White}{Lavender}
+    \begin{adjustwidth}{-2cm}{-1cm}
+    \begin{tabular}{cccp{11cm}<{\centering}}
+  %\multicolumn{2}{c}{contents}
+  %\usepackage{booktabs}
+  %\cmidrule{2-3}
+    \toprule
+      步骤序号 & 步骤作用 & 步骤说明  \\
+    \midrule
+      map & (UserID,FilmID,Score) -> (FilmID，UserID\_Score) & 变为 FilmID为key 的键值对 \\
+      reduce & (FilmID,User\_Score) -> (FilmID, $[$User\_Score$]$) & 将同一个FilmID的所有value放在一起 \\
+    \bottomrule
+    \hiderowcolors
+    \end{tabular}
+    \end{adjustwidth}
+    \label{tab:s1-mapreduce}
+  \end{table}
+  
+
+%\usepackage{listings}
+\begin{lstlisting}[style = c]
+@Override
+protected void map(LongWritable key, Text value, Context context) 
+    throws IOException, InterruptedException{
+String[] values = value.toString().split(",");
+String userID = values[0];
+String itemID = values[1];
+String score = values[2];
+
+outKey.set(itemID);
+outValue.set(userID+"_"+score);
+context.write(outKey, outValue);
+}
+\end{lstlisting}
+
+
 
 \subsection{第二步}
 
-TODO:计算相似度矩阵
+在第二步中，我使用步骤一计算得到的用户-物品倒排表，完成了相似度矩阵的计算。在相似度的计算中，我使用的是余弦相似度，在今后的改善中，会对用户的数据进行正则化，之后再进行相似度计算，会更加准确。
 
-\subsection{第三步}
+由于在相似度的计算中，需要访问之前计算得到的完整的用户-物品倒排表，因此在计算前使用\texttt{setop函数}，调用hdfs的api加载用户-物品倒排表。
+在map任务中，会计算出多个(FilmID,similarity)键值对。
+在reduce任务中，会将具有相同FilmID的多个键值对进行整合，写到结果中。
 
-TODO:矩阵转置
+该部分关键代码可见\autoref{sec:cal-similarity}。
+
+该部分完成后，得到的相似度矩阵会写入到输出结果中，注意矩阵在文件中的表示方法如\autoref{fig:s2-matrix-example}所示。
+
+
+%\usepackage{changepage}
+%\usepackage{rotating}
+%\usepackage{float}
+%\usepackage[section]{placeins}
+%\begin{sidewaystable}[!Htp]
+\begin{figure}[htp]
+  %\begin{adjustwidth}{-1.5cm}{-1cm}
+  \centering
+  \includegraphics[width=13cm]{./figure/2018-07-04-10-59-17.png}
+  \caption{矩阵在文件中的表示方法}
+  \label{fig:s2-matrix-example}
+  %\end{adjustwidth}
+\end{figure}
+
 
 \subsection{第四步}
 
-TODO:矩阵相乘
+此时，我有了第二步计算得到的相似度矩阵，也有了第三步计算得到的用户-物品倒排表矩阵的转置。
 
-\subsection{第五步}
+因此，当我们在预测第i个用户对第j个电影的评分的时候，我们可以使用相似度矩阵的第j行与用户-物品倒排表矩阵转置的第i行进行点乘，从这里也可以发现，有了之前矩阵的转置操作，这里对两个矩阵的相乘便可以转化为多个矩阵行的点乘，简化了实现，也更利于分布式的计算。
 
-TODO: 去除已看过电影数据
+在该部分，map部分需要完成以下的工作，该部分关键代码可见\autoref{sec:s4-matrix-mul}。
+
+\begin{itemize}
+  \item 将用户-物品倒排表矩阵转置通过文件系统api加载进主机中。
+  \item map任务取得相似度矩阵中的一行，得到行号$R_1$
+  \item 将这一行与用户-物品倒排表矩阵中的第$R_2$行进行点乘。
+  \item 得到键值对($R_1$, $R_2$\_Score)，这里的score为推荐系统预测得到的用户评分
+\end{itemize}
+
+有了键值对后，reduce便可以将这些具有相同key 的键值对整合在一起，并写入到文件中。
+
 
 
 \chapter{测试结果}
@@ -352,7 +472,104 @@ hadoop 1.2.1 中有slot的概念。它是这样的，在每一台机子上跑的
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
 
-\chapter{文件的组织}
+\chapter{部分代码}
+
+\section{第二步：相似度矩阵的计算}\label{sec:cal-similarity}
+
+
+%\usepackage{listings}
+\begin{lstlisting}[style = c]
+  @Override
+  protected void map(LongWritable key, Text value, Context context) 
+      throws IOException, InterruptedException {
+
+      String row_matrix1 = value.toString().split("\t")[0];
+      String[] column_value_array_matrix1 = value.toString().split("\t")[1].split(",");
+
+      // calculate E-distance
+      double denominator1 = 0;
+      for (String column_value : column_value_array_matrix1) {
+          String score = column_value.split("_")[1];//TODO: change here from 0 to 1
+          denominator1 += Double.valueOf(score) * Double.valueOf(score);
+      }
+      denominator1 = Math.sqrt(denominator1);
+
+      for (String line : cacheList) {
+          String row_matrix2 = line.split("\t")[0];
+          String[] column_value_array_matrix2 = line.split("\t")[1].split(",");
+          
+          double denominator2 = 0;
+          for (String row_value : column_value_array_matrix2) {
+              String score = row_value.split("_")[1]; //TODO: change here from 0 t 1
+              denominator2 += Double.valueOf(score) * Double.valueOf(score);
+          }
+          denominator2 = Math.sqrt(denominator2);
+
+          double numerator = 0;
+          for (String cv : column_value_array_matrix1) {
+              String column_matrix1 = cv.split("_")[0];
+              String value_matrix1 = cv.split("_")[1];
+
+              for (String cvm2 : column_value_array_matrix2) {
+                  if (cvm2.startsWith(column_matrix1 + "_")) {
+                      String value_matrix2 = cvm2.split("_")[1];
+                      numerator += Double.valueOf(value_matrix1) * Double.valueOf(value_matrix2);
+                  }
+              }
+          }
+
+          double cos = numerator / (denominator2 * denominator1);
+          if (cos == 0) {
+              continue;
+          }
+          
+          outKey.set(row_matrix1);
+          outValue.set(row_matrix2 + "_" + df.format(cos));
+          context.write(outKey, outValue);
+      }
+  }
+\end{lstlisting}
+
+
+\section{第四步：矩阵相乘}\label{sec:s4-matrix-mul}
+
+这里放的是矩阵相乘的第二步，将左矩阵与转置后的右矩阵进行逐行点乘操作。
+
+%\usepackage{listings}
+\begin{lstlisting}[style = c]
+  @Override
+  protected void map(LongWritable key, Text value, Context context) 
+      throws IOException, InterruptedException {
+
+      String row_matrix1 = value.toString().split("\t")[0];
+      String[] column_value_array_matrix1 = value.toString().split("\t")[1].split(",");
+      for (String line : cacheList) {
+          String row_matrix2 = line.split("\t")[0];
+          String[] column_value_array_matrix2 = line.split("\t")[1].split(",");
+          
+          double result = 0;
+          for (String cv : column_value_array_matrix1) {
+              String column_matrix1 = cv.split("_")[0];
+              String value_matrix1 = cv.split("_")[1];
+
+              for (String cvm2 : column_value_array_matrix2) {
+                  if (cvm2.startsWith(column_matrix1 + "_")) {
+                      String value_matrix2 = cvm2.split("_")[1];
+                      result += Double.valueOf(value_matrix1) * Double.valueOf(value_matrix2);
+                  }
+              }
+          }
+          if (result == 0) {
+              continue;
+          }
+          outKey.set(row_matrix1);
+          outValue.set(row_matrix2 + "_" + df.format(result));
+          context.write(outKey, outValue);
+      }
+  }
+
+\end{lstlisting}
+
 
 \cleardoublepage
 \end{document}
